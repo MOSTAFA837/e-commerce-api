@@ -38,3 +38,55 @@ export const login = expressAsyncHandler(async (req, res) => {
     throw new Error("Invalid credentials!");
   }
 });
+
+export const allUsers = expressAsyncHandler(async (req, res) => {
+  try {
+    const allUsers = await User.find();
+    res.json(allUsers);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export const getUser = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const getUser = await User.findById(id);
+    res.json(getUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export const deleteUser = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleteUser = await User.findByIdAndDelete(id);
+    res.json(deleteUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+export const updateUser = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        firstname: req?.body?.firstname,
+        lastname: req?.body?.lastname,
+        email: req?.body?.email,
+        mobile: req?.body?.mobile,
+      },
+      { new: true }
+    );
+
+    res.json(updatedUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
