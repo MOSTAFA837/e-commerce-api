@@ -8,13 +8,14 @@ import {
   register,
   updateUser,
 } from "../controllers/userCtrl.js";
+import { authenticated } from "../middlewares/auth.js";
 
 const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
 router.get("/all-users", allUsers);
-router.get("/:id", getUser);
+router.get("/:id", authenticated, getUser);
 router.delete("/:id", deleteUser);
 router.put("/:id", updateUser);
 

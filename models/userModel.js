@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 // Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema(
   {
@@ -33,6 +35,18 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "user",
+    },
+    cart: {
+      type: Array,
+      default: [],
+    },
+    wishlist: {
+      type: ObjectId,
+      ref: "Product",
+    },
+    address: {
+      type: ObjectId,
+      ref: "Address",
     },
   },
   { timestamps: true }
