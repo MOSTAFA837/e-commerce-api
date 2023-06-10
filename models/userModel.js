@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 // Declare the Schema of the Mongo model
 const userSchema = new mongoose.Schema(
@@ -32,6 +33,15 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async (next) => {
+  const salt = bcrypt.genSaltSync(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+userSchema.methods.isPasswordMatched = async (enteredPassword) => {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 //Export the model
 export default mongoose.models.User || mongoose.model("User", userSchema);
