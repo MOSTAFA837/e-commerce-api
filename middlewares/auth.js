@@ -2,7 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-export const authenticated = async (req, res, next) => {
+export const authenticated = expressAsyncHandler(async (req, res, next) => {
   let token;
 
   if (req?.headers?.authorization?.startsWith("Bearer")) {
@@ -25,4 +25,16 @@ export const authenticated = async (req, res, next) => {
   } else {
     throw new Error("There is no token attached to headers.");
   }
-};
+});
+
+export const isAdmin = expressAsyncHandler(async (req, res, next) => {
+  const { email } = req.user;
+
+  const user = await User.findOne({ email });
+
+  if (user.role !== "admin") {
+    throw new Error("You are not an admin!");
+  } else {
+    next();
+  }
+});

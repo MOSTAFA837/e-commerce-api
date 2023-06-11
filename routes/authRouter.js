@@ -8,15 +8,15 @@ import {
   register,
   updateUser,
 } from "../controllers/userCtrl.js";
-import { authenticated } from "../middlewares/auth.js";
+import { authenticated, isAdmin } from "../middlewares/auth.js";
 
 const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
 router.get("/all-users", allUsers);
-router.get("/:id", authenticated, getUser);
+router.get("/:id", authenticated, isAdmin, getUser);
 router.delete("/:id", deleteUser);
-router.put("/:id", updateUser);
+router.put("/edit-user", authenticated, updateUser);
 
 export default router;

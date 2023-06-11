@@ -71,7 +71,7 @@ export const deleteUser = expressAsyncHandler(async (req, res) => {
 });
 
 export const updateUser = expressAsyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
