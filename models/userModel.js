@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Product",
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     address: {
       type: ObjectId,
       ref: "Address",

@@ -90,3 +90,36 @@ export const updateUser = expressAsyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+export const blockUser = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isBlocked: true },
+      { new: true }
+    );
+    res.json({
+      msg: `${user.email} has been blocked successfully.`,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+export const unblockUser = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isBlocked: false },
+      { new: true }
+    );
+    res.json({
+      msg: `${user.email} has been unblocked successfully.`,
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+});
