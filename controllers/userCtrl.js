@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/jwt.js";
+import { validateMongoDBId } from "../utils/validateMongoDBId.js";
 
 export const register = expressAsyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -50,6 +51,7 @@ export const allUsers = expressAsyncHandler(async (req, res) => {
 
 export const getUser = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDBId(id);
 
   try {
     const getUser = await User.findById(id);
@@ -61,6 +63,7 @@ export const getUser = expressAsyncHandler(async (req, res) => {
 
 export const deleteUser = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDBId(id);
 
   try {
     const deleteUser = await User.findByIdAndDelete(id);
@@ -72,6 +75,7 @@ export const deleteUser = expressAsyncHandler(async (req, res) => {
 
 export const updateUser = expressAsyncHandler(async (req, res) => {
   const { id } = req.user;
+  validateMongoDBId(id);
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -93,6 +97,7 @@ export const updateUser = expressAsyncHandler(async (req, res) => {
 
 export const blockUser = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDBId(id);
 
   try {
     const user = await User.findByIdAndUpdate(
@@ -107,8 +112,10 @@ export const blockUser = expressAsyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
 export const unblockUser = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongoDBId(id);
 
   try {
     const user = await User.findByIdAndUpdate(
