@@ -62,10 +62,13 @@ export const updateProduct = expressAsyncHandler(async (req, res) => {
   }
 
   try {
-    await Product.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
     res.json({
       msg: `Successfully updated a product`,
+      updatedProduct,
     });
   } catch (error) {
     throw new Error(error);
