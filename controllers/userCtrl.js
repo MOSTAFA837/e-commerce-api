@@ -1,6 +1,5 @@
 import User from "../models/userModel.js";
 import expressAsyncHandler from "express-async-handler";
-import bcrypt from "bcrypt";
 import { generateRefreshToken, generateToken } from "../utils/jwt.js";
 import { validateMongoDBId } from "../utils/validateMongoDBId.js";
 import jwt from "jsonwebtoken";

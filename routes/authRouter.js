@@ -1,4 +1,5 @@
 import express from "express";
+const router = express.Router();
 
 import {
   allUsers,
@@ -13,8 +14,6 @@ import {
   updateUser,
 } from "../controllers/userCtrl.js";
 import { authenticated, isAdmin } from "../middlewares/auth.js";
-
-const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
