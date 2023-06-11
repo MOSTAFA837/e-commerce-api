@@ -7,6 +7,7 @@ import {
   getRefreshToken,
   getUser,
   login,
+  logout,
   register,
   unblockUser,
   updateUser,
@@ -18,6 +19,7 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.get("/refresh", getRefreshToken);
+router.get("/logout", logout);
 
 router.get("/all-users", allUsers);
 router.get("/:id", authenticated, isAdmin, getUser);

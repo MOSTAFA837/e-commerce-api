@@ -124,6 +124,25 @@ export const updateUser = expressAsyncHandler(async (req, res) => {
   }
 });
 
+export const logout = expressAsyncHandler(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) throw new Error("No refresh token in cookies.");
+
+  await User.findOneAndUpdate(
+    { refreshToken },
+    {
+      refreshToken: "",
+    }
+  );
+
+  res
+    .clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+    })
+    .sendStatus(204); // forbidden
+});
+
 export const blockUser = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDBId(id);
