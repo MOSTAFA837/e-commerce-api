@@ -1,8 +1,14 @@
 import expressAsyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
+import slugify from "slugify";
 
 export const createProduct = expressAsyncHandler(async (req, res) => {
   try {
+    const title = req.body.title;
+    if (title) {
+      req.body.slug = slugify(title);
+    }
+
     const product = await Product.create(req.body);
     res.json({
       msg: "New product has been created successfully",
@@ -50,16 +56,13 @@ export const deleteProduct = expressAsyncHandler(async (req, res) => {
 export const updateProduct = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
 
+  const title = req.body.title;
+  if (title) {
+    req.body.slug = slugify(title);
+  }
+
   try {
-    await Product.findByIdAndUpdate(id, {
-      title: req?.body?.title,
-      slug: req?.body?.slug,
-      description: req?.body?.description,
-      price: req?.body?.price,
-      category: req?.body?.category,
-      brand: req?.body?.brand,
-      quantity: req?.body?.quantity,
-    });
+    await Product.findByIdAndUpdate(id, req.body, { new: true });
 
     res.json({
       msg: `Successfully updated a product`,
