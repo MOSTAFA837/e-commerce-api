@@ -1,13 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import { dbConnect } from "./db/connectdb.js";
 import authRouter from "./routes/authRouter.js";
+import cookieParser from "cookie-parser";
+
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
+import { dbConnect } from "./db/connectdb.js";
 
 const app = express();
+
 dotenv.config();
 app.use(bodyParser.json());
+app.use(cookieParser());
+
 const PORT = process.env.PORT || 4000;
 
 dbConnect();

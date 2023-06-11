@@ -1,8 +1,9 @@
 import User from "../models/userModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
-import { generateToken } from "../utils/jwt.js";
+import { generateRefreshToken, generateToken } from "../utils/jwt.js";
 import { validateMongoDBId } from "../utils/validateMongoDBId.js";
+import jwt from "jsonwebtoken";
 
 export const register = expressAsyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -26,6 +27,17 @@ export const login = expressAsyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.isPasswordMatched(password))) {
+    const refreshToken = generateRefreshToken(user?._id);
+    await User.findByIdAndUpdate(
+      user._id,
+      { refreshToken: refreshToken },
+      { new: true }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 259200000, // or 72 * 60 * 60 * 1000 = 3 days,
+    });
+
     res.json({
       _id: user?._id,
       firstname: user?.firstname,
@@ -38,6 +50,23 @@ export const login = expressAsyncHandler(async (req, res) => {
   } else {
     throw new Error("Invalid credentials!");
   }
+});
+
+// get user after logging by accessing refresh token
+export const getRefreshToken = expressAsyncHandler(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) throw new Error("No refresh token in cookies");
+
+  const user = await User.findOne({ refreshToken });
+  if (!user) throw new Error("You have to login again.");
+
+  jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err || user.id !== decoded.id)
+      throw new Error("There is something wrong with refresh token.");
+
+    const accessToken = generateToken(user?._id);
+    res.json({ accessToken });
+  });
 });
 
 export const allUsers = expressAsyncHandler(async (req, res) => {
