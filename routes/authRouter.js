@@ -11,6 +11,7 @@ import {
   logout,
   register,
   unblockUser,
+  updatePassword,
   updateUser,
 } from "../controllers/userCtrl.js";
 import { authenticated, isAdmin } from "../middlewares/auth.js";
@@ -19,6 +20,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/refresh", getRefreshToken);
 router.get("/logout", logout);
+router.put("/password", authenticated, updatePassword);
 
 router.get("/all-users", allUsers);
 router.get("/:id", authenticated, isAdmin, getUser);
