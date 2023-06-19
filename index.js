@@ -6,6 +6,7 @@ import morgan from "morgan";
 
 import authRouter from "./routes/authRouter.js";
 import productRouter from "./routes/productRouter.js";
+import blogRouter from "./routes/blogRouter.js";
 
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import { dbConnect } from "./db/connectdb.js";
@@ -23,6 +24,7 @@ dbConnect();
 
 app.use("/api/user", authRouter);
 app.use("/api/product", productRouter);
+app.use("/api/blog", blogRouter);
 
 app.use(notFound);
 app.use(errorHandler);
