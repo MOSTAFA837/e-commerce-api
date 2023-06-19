@@ -32,7 +32,22 @@ export const getProduct = expressAsyncHandler(async (req, res) => {
 
 export const getAllProducts = expressAsyncHandler(async (req, res) => {
   try {
-    const products = await Product.find();
+    // filtering
+    const queryObj = { ...req.query };
+    const excluded = ["page", "sort", "limit", "fields"];
+
+    excluded.forEach((ex) => delete queryObj[ex]);
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    const query = Product.find(JSON.parse(queryStr));
+
+    // console.log(queryObj);
+    // console.log(queryStr);
+    // console.log(JSON.parse(queryStr));
+
+    const products = await query;
     res.json(products);
   } catch (error) {
     throw new Error(error);
