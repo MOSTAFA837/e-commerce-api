@@ -10,13 +10,11 @@ const userSchema = new mongoose.Schema(
     firstname: {
       type: String,
       required: true,
-      unique: true,
       index: true,
     },
     lastname: {
       type: String,
       required: true,
-      unique: true,
       index: true,
     },
     email: {
@@ -88,6 +86,8 @@ userSchema.methods.createPasswordResetToken = async function () {
     .digest("hex");
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  return resetToken;
 };
 
 //Export the model

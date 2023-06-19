@@ -5,6 +5,7 @@ import {
   allUsers,
   blockUser,
   deleteUser,
+  forgetPasswordToken,
   getRefreshToken,
   getUser,
   login,
@@ -21,6 +22,7 @@ router.post("/login", login);
 router.get("/refresh", getRefreshToken);
 router.get("/logout", logout);
 router.put("/password", authenticated, updatePassword);
+router.post("/forget-password-token", forgetPasswordToken);
 
 router.get("/all-users", allUsers);
 router.get("/:id", authenticated, isAdmin, getUser);

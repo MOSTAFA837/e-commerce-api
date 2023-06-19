@@ -3,6 +3,7 @@ import expressAsyncHandler from "express-async-handler";
 import { generateRefreshToken, generateToken } from "../utils/jwt.js";
 import { validateMongoDBId } from "../utils/validateMongoDBId.js";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/email.js";
 
 export const register = expressAsyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -192,5 +193,30 @@ export const updatePassword = expressAsyncHandler(async (req, res) => {
     res.json(updatedUser);
   } else {
     res.json(user);
+  }
+});
+
+export const forgetPasswordToken = expressAsyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) throw new Error("User not found with this email!");
+
+  try {
+    const token = await user.createPasswordResetToken();
+    await user.save();
+
+    const resetURL = `Hi, Please follow this link to reset your password. This link is valid for 10 minutes from now. <a href='${process.env.API_URL}/user/reset-password/${token}'>Click here</a>`;
+    const data = {
+      to: email,
+      text: `Hey ${user.firstname}`,
+      subject: "Forgot password link",
+      html: resetURL,
+    };
+
+    sendEmail(data);
+    res.json(token);
+  } catch (error) {
+    throw new Error(error);
   }
 });
