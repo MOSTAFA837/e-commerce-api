@@ -204,7 +204,7 @@ export const rating = expressAsyncHandler(async (req, res) => {
       let ratingsLength = ratedProduct.ratings.length;
 
       let ratingsSum = await ratedProduct.ratings
-        .map((item) => item.star)
+        .map((rate) => rate.star)
         .reduce((prev, curr) => prev + curr, 0);
 
       let actualRating = Math.round(ratingsSum / ratingsLength);
