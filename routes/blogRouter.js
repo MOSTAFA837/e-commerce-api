@@ -2,6 +2,7 @@ import express from "express";
 import {
   createBlog,
   deleteBlog,
+  dislikeBlog,
   getAllBlogs,
   getBlog,
   likeBlog,
@@ -16,6 +17,7 @@ router.get("/:id", getBlog);
 router.get("/", getAllBlogs);
 
 router.put("/like", authenticated, likeBlog);
+router.put("/dislike", authenticated, dislikeBlog);
 
 router.put("/:id", authenticated, isAdmin, updateBlog);
 router.delete("/:id", authenticated, isAdmin, deleteBlog);
