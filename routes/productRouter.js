@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  addToWishlist,
   createProduct,
   deleteProduct,
   getAllProducts,
@@ -15,6 +16,7 @@ router.post("/", authenticated, isAdmin, createProduct);
 router.get("/:id", getProduct);
 router.get("/", getAllProducts);
 router.delete("/:id", authenticated, isAdmin, deleteProduct);
+router.put("/wishlist", authenticated, addToWishlist);
 router.put("/:id", authenticated, isAdmin, updateProduct);
 
 export default router;
