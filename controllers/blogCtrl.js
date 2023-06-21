@@ -77,3 +77,55 @@ export const deleteBlog = expressAsyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+export const likeBlog = expressAsyncHandler(async (req, res) => {
+  const { blogId } = req.body;
+
+  const blog = await Blog.findById(blogId);
+  const reqUserId = req?.user._id;
+
+  // is user disliked the blog
+  const isUserDisliked = blog.dislikes.find(
+    (userId) => userId.toString() === reqUserId.toString()
+  );
+
+  if (isUserDisliked) {
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        isDisliked: false,
+        $pull: { dislikes: reqUserId },
+      },
+      { new: true }
+    );
+
+    res.json(blog);
+  }
+
+  // is user liked the blog
+  const isLiked = blog.isLiked;
+
+  if (isLiked) {
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        isLiked: false,
+        $pull: { likes: reqUserId },
+      },
+      { new: true }
+    );
+
+    res.json(blog);
+  } else {
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      {
+        isLiked: true,
+        $push: { likes: reqUserId },
+      },
+      { new: true }
+    );
+
+    res.json(blog);
+  }
+});

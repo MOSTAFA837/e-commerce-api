@@ -11,7 +11,7 @@ import { authenticated, isAdmin } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.post("/", createProduct);
+router.post("/", authenticated, isAdmin, createProduct);
 router.get("/:id", getProduct);
 router.get("/", getAllProducts);
 router.delete("/:id", authenticated, isAdmin, deleteProduct);
