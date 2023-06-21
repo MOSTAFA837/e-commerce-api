@@ -26,11 +26,11 @@ export const getBlog = expressAsyncHandler(async (req, res) => {
       { new: true }
     );
 
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id)
+      .populate("likes dislikes")
+      .select("-__v");
 
-    res.json({
-      blog,
-    });
+    res.json(blog);
   } catch (error) {
     throw new Error(error);
   }
@@ -150,7 +150,7 @@ export const dislikeBlog = expressAsyncHandler(async (req, res) => {
     );
   }
 
-  // // is user disliked the blog
+  // is user disliked the blog
   const isDisliked = blog.isDisliked;
 
   if (isDisliked) {
