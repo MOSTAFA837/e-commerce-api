@@ -160,3 +160,66 @@ export const addToWishlist = expressAsyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+export const rating = expressAsyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { star, comment, prodId } = req.body;
+
+  try {
+    const product = await Product.findById(prodId);
+
+    const alreadyRated = product.ratings.find(
+      (rate) => rate.postedby.toString() === _id.toString()
+    );
+
+    if (alreadyRated) {
+      await Product.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRated },
+        },
+        {
+          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+        },
+        { new: true }
+      );
+
+      res.json({
+        msg: "successfully updated your rating.",
+      });
+    } else {
+      const ratedProduct = await Product.findByIdAndUpdate(
+        prodId,
+        {
+          $push: {
+            ratings: {
+              star: star,
+              comment: comment,
+              postedby: _id,
+            },
+          },
+        },
+        { new: true }
+      );
+
+      let ratingsLength = ratedProduct.ratings.length;
+
+      let ratingsSum = await ratedProduct.ratings
+        .map((item) => item.star)
+        .reduce((prev, curr) => prev + curr, 0);
+
+      let actualRating = Math.round(ratingsSum / ratingsLength);
+
+      let finalProduct = await Product.findByIdAndUpdate(
+        prodId,
+        {
+          totalrating: actualRating,
+        },
+        { new: true }
+      );
+
+      res.json(finalProduct);
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+});

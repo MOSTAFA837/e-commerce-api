@@ -5,6 +5,7 @@ import {
   deleteProduct,
   getAllProducts,
   getProduct,
+  rating,
   updateProduct,
 } from "../controllers/productCtrl.js";
 
@@ -17,6 +18,7 @@ router.get("/:id", getProduct);
 router.get("/", getAllProducts);
 router.delete("/:id", authenticated, isAdmin, deleteProduct);
 router.put("/wishlist", authenticated, addToWishlist);
+router.put("/rating", authenticated, rating);
 router.put("/:id", authenticated, isAdmin, updateProduct);
 
 export default router;
